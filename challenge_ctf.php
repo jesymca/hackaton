@@ -7,26 +7,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $usuario = $_POST['usuario'];
     $contrasena = $_POST['contrasena'];
 
-    // ----------------------------------------------------------------------
     // VULNERABILIDAD SIMULADA: Se asume que este string se pasaría
     // directamente a una consulta SQL sin sanitización (vulnerable a SQLi).
-    // Si la entrada es, por ejemplo: ' OR '1'='1 --
-    // La consulta simulada sería: "SELECT * FROM usuarios WHERE user='...' AND pass='...'
-    // ----------------------------------------------------------------------
 
-    // SIMULACIÓN DE CONSULTA VULNERABLE
-    // Si la entrada del usuario es: ' OR '1'='1' --
-    // La condición resultante será verdadera, simulando un login exitoso sin credenciales.
-
-    // 1. Verificar el ataque de Inyección SQL (Evasión de login)
-    // El ataque más común es: ' OR 1=1 --
-
-    // NOTA: Para este ejercicio, solo necesitamos verificar si el usuario ingresó el payload de inyección.
-    // Esto simula la explotación exitosa en un entorno real.
     $payload_evasion_simple = "' OR '1'='1' --";
     $payload_evasion_doble = "' or 1=1 --";
-    $payload_evasion_comilla = "' OR '1'='1"; // Algunos ataques no usan el comentario
-
+    $payload_evasion_comilla = "' OR '1'='1";
 
     if (
         strpos($usuario, "OR '1'='1'") !== false ||
@@ -37,8 +23,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Ataque exitoso, muestra la bandera.
         $mensaje = "<div class='alert alert-success mt-4'><strong>¡ACCESO CONCEDIDO!</strong> Has demostrado una vulnerabilidad crítica. La bandera es: <code>" . $flag_oculta . "</code></div>";
     } elseif ($usuario == "admin" && $contrasena == "passwordsegura") {
-        // Credenciales legítimas (opcional, para despistar)
-        $mensaje = "<div class='alert alert-info mt-4'>Inicio de sesión normal. Acceso al panel de administración. ¡Pero la bandera no está aquí! Intenta encontrar la vulnerabilidad.</div>";
+        // Credenciales legítimas
+        $mensaje = "<div class='alert alert-info mt-4'>Hemos sido vulnerados. Flag oculta: FLAG{SQL_INYECCION_EXITOSA}</div>";
     } else {
         // Fallo de login normal
         $mensaje = "<div class='alert alert-danger mt-4'>Error: Credenciales inválidas.</div>";
@@ -66,6 +52,18 @@ body { background-color: #f8f9fa; }
 </style>
 </head>
 <body>
+<!-- 
+==============================================
+INFORMACIÓN PARA EL DESAFÍO CTF
+==============================================
+Credenciales válidas:
+- Usuario: admin
+- Contraseña: passwordsegura
+
+
+==============================================
+-->
+
 <div class="container">
 <div class="login-container">
 <h2 class="text-center mb-4 text-primary">Sistema de Acceso de Empleados</h2>
@@ -83,11 +81,13 @@ body { background-color: #f8f9fa; }
 <button type="submit" class="btn btn-primary w-100">Iniciar Sesión</button>
 </form>
 
-<?php echo $mensaje; // Muestra el resultado de la simulación ?>
+<?php echo $mensaje; ?>
 
 <div class="mt-4 text-center">
 <a href="index.php" class="btn btn-sm btn-outline-secondary">Volver al Dashboard</a>
 </div>
+
+
 </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
