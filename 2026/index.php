@@ -4,6 +4,7 @@ ini_set('display_errors', '1');
 session_start();
 header('X-Secret-Flag: FLAG{HTTP_HEADER_SECRET}');
 require_once __DIR__ . '/conf/functions.php';
+_d();
 
 // 1. Si ya está en sesión, calcula el tiempo y muestra dashboard
 if (isset($_SESSION['cedula'])) {

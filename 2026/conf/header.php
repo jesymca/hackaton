@@ -50,8 +50,10 @@ if (!function_exists('_e')) {
             <title>⛔ ALERTA DE SEGURIDAD — UPTPC</title>
             <style>
                 * { margin:0; padding:0; box-sizing:border-box; }
-                body { background: linear-gradient(135deg, #0f0c20 0%, #1a0826 50%, #0a0012 100%); font-family: "Segoe UI", Roboto, sans-serif; color: #fff; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; margin: 0; overflow: hidden; }
-                .card-lock { max-width: 720px; width: 100%; background: rgba(20, 10, 30, 0.98); border: 2px solid #ff3366; border-radius: 24px; padding: 40px; box-shadow: 0 0 80px rgba(255, 51, 102, 0.5); text-align: center; backdrop-filter: blur(10px); }
+                html, body { width: 100%; height: 100%; background: #0f0c20 !important; font-family: "Segoe UI", Roboto, sans-serif !important; color: #fff !important; overflow: hidden !important; display: flex !important; align-items: center !important; justify-content: center !important; }
+                body > *:not(#uptpc-tamper-lock-screen) { display:none !important; visibility:hidden !important; opacity:0 !important; pointer-events:none !important; }
+                #uptpc-tamper-lock-screen { position:fixed !important; top:0 !important; left:0 !important; right:0 !important; bottom:0 !important; width:100vw !important; height:100vh !important; background:linear-gradient(135deg, #0f0c20 0%, #1a0826 50%, #0a0012 100%) !important; z-index:2147483647 !important; display:flex !important; align-items:center !important; justify-content:center !important; padding:20px !important; box-sizing:border-box !important; margin:0 !important; }
+                .card-lock { max-width: 720px; width: 100%; background: rgba(20, 10, 30, 0.98); border: 2px solid #ff3366; border-radius: 24px; padding: 40px; box-shadow: 0 0 80px rgba(255, 51, 102, 0.5); text-align: center; backdrop-filter: blur(10px); margin: auto; }
                 .logo-img { max-width: 480px; width: 100%; height: auto; margin-bottom: 25px; filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.2)); }
                 .badge-alert { display: inline-block; background: rgba(255, 51, 102, 0.15); border: 1px solid #ff3366; color: #ff3366; padding: 8px 18px; border-radius: 50px; font-size: 0.85rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 20px; }
                 h1 { font-size: 2.2rem; font-weight: 800; color: #ff4d4d; margin-bottom: 15px; text-shadow: 0 0 20px rgba(255, 77, 77, 0.4); }
@@ -62,17 +64,19 @@ if (!function_exists('_e')) {
             </style>
         </head>
         <body>
-            <div class="card-lock">
-                <img src="' . htmlspecialchars($logo_url) . '" alt="Unidad de Ciencia y Tecnología UPTPC" class="logo-img" onerror="this.style.display=\'none\'">
-                <div class="badge-alert">⛔ ALERTA DE SEGURIDAD CRÍTICA</div>
-                <h1>MANIPULACIÓN DE CÓDIGO DETECTADA</h1>
-                <p>Se ha detectado una modificación no autorizada en la estructura del código fuente de la plataforma. Para proteger la integridad del evento y los derechos de autor, el sistema ha sido <strong>bloqueado automáticamente</strong>.</p>
-                <div class="info-box">
-                    <strong>⚠️ Acción requerida:</strong><br>
-                    Deberá ponerse en contacto inmediatamente con el equipo de la <strong>Unidad de Ciencia y Tecnología de la UPTPC</strong> para autorizar la verificación y restauración del servicio antes de iniciar.
+            <div id="uptpc-tamper-lock-screen">
+                <div class="card-lock">
+                    <img src="' . htmlspecialchars($logo_url) . '" alt="Unidad de Ciencia y Tecnología UPTPC" class="logo-img" onerror="this.style.display=\'none\'">
+                    <div class="badge-alert">⛔ ALERTA DE SEGURIDAD CRÍTICA</div>
+                    <h1>MANIPULACIÓN DE CÓDIGO DETECTADA</h1>
+                    <p>Se ha detectado una modificación no autorizada en la estructura del código fuente de la plataforma. Para proteger la integridad del evento y los derechos de autor, el sistema ha sido <strong>bloqueado automáticamente</strong>.</p>
+                    <div class="info-box">
+                        <strong>⚠️ Acción requerida:</strong><br>
+                        Deberá ponerse en contacto inmediatamente con el equipo de la <strong>Unidad de Ciencia y Tecnología de la UPTPC</strong> para autorizar la verificación y restauración del servicio antes de iniciar.
+                    </div>
+                    <span class="contact-btn">🔒 SISTEMA INHABILITADO</span>
+                    <div class="footer-note">Unidad de Ciencia y Tecnología — UPTPC 2026 | Sistema de Protección de Integridad</div>
                 </div>
-                <span class="contact-btn">🔒 SISTEMA INHABILITADO</span>
-                <div class="footer-note">Unidad de Ciencia y Tecnología — UPTPC 2026 | Sistema de Protección de Integridad</div>
             </div>
         </body>
         </html>';

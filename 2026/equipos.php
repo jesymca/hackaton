@@ -5,6 +5,7 @@ ini_set('display_errors', 1);
 
 session_start();
 require_once __DIR__ . '/conf/functions.php';
+_d();
 
 // Verificar autenticación administrativa
 if (!isset($_SESSION['admin_autenticado']) || $_SESSION['admin_autenticado'] !== true) {

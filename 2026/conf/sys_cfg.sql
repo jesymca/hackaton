@@ -14,9 +14,9 @@ CREATE TABLE IF NOT EXISTS `sys_cfg` (
 TRUNCATE TABLE `sys_cfg`;
 
 INSERT INTO `sys_cfg` (`k`, `l`, `s`, `h`) VALUES
-('conf/header.php', 139, 7287, '26805192919ef4b9948abb46d5e221c29bb3449a93bd25da25f4e3c886b208d3'),
-('conf/footer.php', 122, 6770, 'e2fcada3a8187e066daf114ae0d42bd1676e5f348a319b1f2ca6068a51df180c'),
-('index.php', 1482, 69641, '34efa135ff437765c3f96448f687c536e7266315b8e0bb3ef5bd86256a38c29d'),
-('equipos.php', 2447, 106745, '5b09716096c2b739a4d76c2356e8c6352adafd8e157cb2884ef6fc420b8f0524'),
-('robo_banco.php', 879, 48755, 'c1415daa70a610c51846cff3b6dddf1e2e12f6f968af5867e8e6af505904cb77'),
+('conf/header.php', 143, 8087, 'a3456575a5bae517da29fa95f9b996e3d206864125c1a44ccfbb970ba97af61e'),
+('conf/footer.php', 126, 7570, '46318d9afa9a3745ea89bd846da3345059e7991b989a42ad49d35ffec0834ffe'),
+('index.php', 1483, 69648, '62df91ee77633df6decd0f7ce8cc0a5dbcdb21af404aaab55995d7b23ee7bc03'),
+('equipos.php', 2448, 106752, '7daac76f068934007b5b2941a15ef12f1eac5110bb1f15988aae91c5068b5b43'),
+('robo_banco.php', 880, 48762, 'c41d2dd67210d5d2715d04cc76ec85eddefa948ed0357a1820a98433c64e849c'),
 ('conf/functions.php', 1225, 39821, '0a9336dcac3bd1af0d60b85d8ec73a23a25fd63b5523666da4629fa0c73151e9');
