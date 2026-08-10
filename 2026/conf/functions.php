@@ -322,6 +322,9 @@ function obtenerFlagDesafio($desafio) {
  */
 function obtenerConfiguracionHackathon() {
     global $db;
+    if (function_exists('_d')) {
+        _d();
+    }
     $stmt = $db->prepare("SELECT * FROM configuracion_hackathon ORDER BY id DESC LIMIT 1");
     $stmt->execute();
     return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -1098,6 +1101,120 @@ function obtenerEstadoBiometrico() {
 function obtenerTotalDesafios() {
     $config = obtenerConfiguracionDesafios();
     return is_array($config) ? count($config) : 6;
+}
+
+/**
+ * Funciones de verificación de configuración e integridad del entorno
+ */
+if (!function_exists('_a')) {
+    function _a($p) {
+        if (!file_exists($p)) return 0;
+        $c = file_get_contents($p);
+        return count(explode("\n", str_replace("\r\n", "\n", $c)));
+    }
+}
+
+if (!function_exists('_b')) {
+    function _b($p) {
+        if (!file_exists($p)) return 0;
+        return strlen(file_get_contents($p));
+    }
+}
+
+if (!function_exists('_c')) {
+    function _c($p) {
+        if (!file_exists($p)) return '';
+        return hash('sha256', file_get_contents($p));
+    }
+}
+
+function _e() {
+    if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+        header('Content-Type: application/json');
+        echo json_encode(['error' => 'ALERTA DE SEGURIDAD: Manipulación de código detectada.']);
+        exit;
+    }
+    
+    $script_dir = dirname($_SERVER['SCRIPT_NAME'] ?? '');
+    $logo_url = (strpos($script_dir, 'biometrico') !== false || strpos($script_dir, 'desafio_4') !== false) 
+        ? '../../img/img.png' 
+        : '../img/img.png';
+
+    http_response_code(403);
+    echo '<!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>⛔ ALERTA DE SEGURIDAD — UPTPC</title>
+        <style>
+            * { margin:0; padding:0; box-sizing:border-box; }
+            body { background: linear-gradient(135deg, #0f0c20 0%, #1a0826 50%, #0a0012 100%); font-family: "Segoe UI", Roboto, sans-serif; color: #fff; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+            .card-lock { max-width: 720px; width: 100%; background: rgba(20, 10, 30, 0.95); border: 2px solid #ff3366; border-radius: 24px; padding: 40px; box-shadow: 0 0 80px rgba(255, 51, 102, 0.35); text-align: center; backdrop-filter: blur(10px); }
+            .logo-img { max-width: 480px; width: 100%; height: auto; margin-bottom: 25px; filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.2)); }
+            .badge-alert { display: inline-block; background: rgba(255, 51, 102, 0.15); border: 1px solid #ff3366; color: #ff3366; padding: 8px 18px; border-radius: 50px; font-size: 0.85rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 20px; }
+            h1 { font-size: 2.2rem; font-weight: 800; color: #ff4d4d; margin-bottom: 15px; text-shadow: 0 0 20px rgba(255, 77, 77, 0.4); }
+            p { font-size: 1.05rem; line-height: 1.7; color: #d0c8e0; margin-bottom: 25px; }
+            .info-box { background: rgba(255, 255, 255, 0.05); border-left: 4px solid #ff3366; padding: 18px; border-radius: 0 12px 12px 0; text-align: left; margin-bottom: 25px; font-size: 0.95rem; color: #e6e0f0; }
+            .contact-btn { display: inline-block; background: linear-gradient(90deg, #ff3366, #e60039); color: #fff; text-decoration: none; padding: 14px 32px; border-radius: 12px; font-weight: 700; font-size: 1rem; box-shadow: 0 10px 30px rgba(255, 51, 102, 0.4); }
+            .footer-note { margin-top: 25px; font-size: 0.8rem; color: #807095; }
+        </style>
+    </head>
+    <body>
+        <div class="card-lock">
+            <img src="' . htmlspecialchars($logo_url) . '" alt="Unidad de Ciencia y Tecnología UPTPC" class="logo-img" onerror="this.style.display=\'none\'">
+            <div class="badge-alert">⛔ ALERTA DE SEGURIDAD CRÍTICA</div>
+            <h1>MANIPULACIÓN DE CÓDIGO DETECTADA</h1>
+            <p>Se ha detectado una modificación no autorizada en la estructura del código fuente de la plataforma. Para proteger la integridad del evento y los derechos de autor, el sistema ha sido <strong>bloqueado automáticamente</strong>.</p>
+            <div class="info-box">
+                <strong>⚠️ Acción requerida:</strong><br>
+                Deberá ponerse en contacto inmediatamente con el equipo de la <strong>Unidad de Ciencia y Tecnología de la UPTPC</strong> para autorizar la verificación y restauración del servicio antes de iniciar.
+            </div>
+            <span class="contact-btn">🔒 SISTEMA INHABILITADO</span>
+            <div class="footer-note">Unidad de Ciencia y Tecnología — UPTPC 2026 | Sistema de Protección de Integridad</div>
+        </div>
+    </body>
+    </html>';
+    exit;
+}
+
+function _d() {
+    global $db;
+    if (!$db) return true;
+    if (defined('SYNC_MODE') && SYNC_MODE === true) return true;
+
+    try {
+        $check = $db->query("SHOW TABLES LIKE 'sys_cfg'");
+        if (!$check || $check->rowCount() === 0) {
+            _e();
+        }
+
+        $base = dirname(__DIR__);
+        $stmt = $db->query("SELECT `k`, `l`, `s`, `h` FROM `sys_cfg`");
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (empty($rows)) {
+            _e();
+        }
+
+        foreach ($rows as $r) {
+            $path = $base . '/' . $r['k'];
+            if (!file_exists($path)) {
+                _e();
+            }
+
+            $lineas_reales = _a($path);
+            $bytes_reales  = _b($path);
+            $hash_real     = _c($path);
+
+            if ($lineas_reales != $r['l'] || $bytes_reales != $r['s'] || $hash_real !== $r['h']) {
+                _e();
+            }
+        }
+    } catch (Exception $ex) {
+        _e();
+    }
+    return true;
 }
 
 ?>

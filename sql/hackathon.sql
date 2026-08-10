@@ -1,205 +1,236 @@
--- Script de inicialización para la base de datos hackathon
--- Diseñado para ejecutarse varias veces sin romperse.
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 10-08-2026 a las 23:58:59
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
 
-SET NAMES utf8mb4;
-SET SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO';
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
+SET time_zone = "+00:00";
 
-CREATE DATABASE IF NOT EXISTS `hackathon`
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_unicode_ci;
 
-USE `hackathon`;
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
-CREATE TABLE IF NOT EXISTS `configuracion_hackathon` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `hackathon_iniciado` TINYINT(1) DEFAULT 0,
-  `tiempo_inicio_global` DATETIME DEFAULT NULL,
-  `duracion_minutos` INT DEFAULT 90,
-  `creado_en` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+--
+-- Base de datos: `hackathon`
+--
 
-CREATE TABLE IF NOT EXISTS `desafios_completados` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `equipo_id` INT DEFAULT NULL,
-  `desafio_id` VARCHAR(50) DEFAULT NULL,
-  `completado_en` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `equipo_id` (`equipo_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- --------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS `equipos` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `nombre_equipo` VARCHAR(100) NOT NULL,
-  `codigo_equipo` VARCHAR(10) NOT NULL,
-  `tiempo_inicio` DATETIME DEFAULT NULL,
-  `puntuacion_total` INT DEFAULT 0,
-  `inicio_tardio` TINYINT(1) DEFAULT 0,
-  `creado_en` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  `estado` TINYINT DEFAULT 0 COMMENT '0: En espera, 1: Compitiendo',
-  `actualizado_en` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `tiempo_acumulado` INT DEFAULT 0,
-  `tiempo_finalizacion` DATETIME DEFAULT NULL,
-  `desafios_completados` INT DEFAULT 0,
-  `completado` TINYINT(1) DEFAULT 0,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `nombre_equipo` (`nombre_equipo`),
-  UNIQUE KEY `codigo_equipo` (`codigo_equipo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+--
+-- Estructura de tabla para la tabla `configuracion_hackathon`
+--
 
-CREATE TABLE IF NOT EXISTS `participantes` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `nombre` VARCHAR(100) NOT NULL,
-  `cedula` VARCHAR(20) NOT NULL,
-  `equipo_id` INT DEFAULT NULL,
-  `creado_en` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `cedula` (`cedula`),
-  KEY `equipo_id` (`equipo_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE `configuracion_hackathon` (
+  `id` int(11) NOT NULL,
+  `hackathon_iniciado` tinyint(1) DEFAULT 0,
+  `tiempo_inicio_global` datetime DEFAULT NULL,
+  `duracion_minutos` int(11) DEFAULT 90,
+  `creado_en` timestamp NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_spanish_ci;
 
+--
+-- Volcado de datos para la tabla `configuracion_hackathon`
+--
+
+INSERT INTO `configuracion_hackathon` (`id`, `hackathon_iniciado`, `tiempo_inicio_global`, `duracion_minutos`, `creado_en`) VALUES
+(1, 1, '2026-08-10 22:30:04', 50, '2025-10-30 13:44:43');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `desafios_completados`
+--
+
+CREATE TABLE `desafios_completados` (
+  `id` int(11) NOT NULL,
+  `equipo_id` int(11) DEFAULT NULL,
+  `desafio_id` varchar(50) DEFAULT NULL,
+  `completado_en` timestamp NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_spanish_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `equipos`
+--
+
+CREATE TABLE `equipos` (
+  `id` int(11) NOT NULL,
+  `nombre_equipo` varchar(100) NOT NULL,
+  `codigo_equipo` varchar(10) NOT NULL,
+  `tiempo_inicio` datetime DEFAULT NULL,
+  `puntuacion_total` int(11) DEFAULT 0,
+  `inicio_tardio` tinyint(1) DEFAULT 0,
+  `creado_en` timestamp NULL DEFAULT current_timestamp(),
+  `estado` tinyint(4) DEFAULT 0 COMMENT '0: En espera, 1: Compitiendo',
+  `actualizado_en` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `tiempo_acumulado` int(11) DEFAULT 0,
+  `tiempo_finalizacion` datetime DEFAULT NULL,
+  `desafios_completados` int(11) DEFAULT 0,
+  `completado` tinyint(1) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `equipos`
+--
+
+INSERT INTO `equipos` (`id`, `nombre_equipo`, `codigo_equipo`, `tiempo_inicio`, `puntuacion_total`, `inicio_tardio`, `creado_en`, `estado`, `actualizado_en`, `tiempo_acumulado`, `tiempo_finalizacion`, `desafios_completados`, `completado`) VALUES
+(33, 'ANGELES DE INFORMATICA', 'WY4UEQ', '2026-08-10 22:30:04', 0, 0, '2025-11-11 14:40:01', 1, '2026-08-10 20:30:04', 0, NULL, 0, 0),
+(34, 'Prueba', 'BVPFGD', '2026-08-10 22:30:04', 0, 0, '2025-11-11 17:54:56', 1, '2026-08-10 20:30:04', 0, NULL, 0, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `participantes`
+--
+
+CREATE TABLE `participantes` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `cedula` varchar(20) NOT NULL,
+  `equipo_id` int(11) DEFAULT NULL,
+  `creado_en` timestamp NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf32 COLLATE=utf32_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `participantes`
+--
+
+INSERT INTO `participantes` (`id`, `nombre`, `cedula`, `equipo_id`, `creado_en`) VALUES
+(64, 'jose', '10101010', 33, '2025-11-11 14:40:01'),
+(65, 'angel', '20202020', 33, '2025-11-11 14:40:01'),
+(66, 'OTRO', '303030', 33, '2025-11-11 14:40:01'),
+(67, 'OTROS', '505050', 33, '2025-11-11 14:40:01'),
+(68, 'Jsudbsj', '30692052', 34, '2025-11-11 17:54:56'),
+(69, 'Bcksbxj', '98765555', 34, '2025-11-11 17:54:56'),
+(70, 'Kslakdosj', '1738172', 34, '2025-11-11 17:54:56'),
+(71, 'Oaldmaal', '99988877', 34, '2025-11-11 17:54:56');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sys_cfg`
+--
+
+CREATE TABLE `sys_cfg` (
+  `id` int(11) NOT NULL,
+  `k` varchar(100) NOT NULL,
+  `l` int(11) NOT NULL,
+  `s` int(11) NOT NULL,
+  `h` varchar(64) NOT NULL,
+  `t` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `sys_cfg`
+--
+
+INSERT INTO `sys_cfg` (`id`, `k`, `l`, `s`, `h`, `t`) VALUES
+(1, 'conf/header.php', 112, 6426, 'cb30b1cb7bac552e3603f6785b8ff3713f497245ee4f82403849baf920bcb28d', '2026-08-10 21:42:38'),
+(2, 'conf/footer.php', 95, 5909, '6a35568c7344b99bfd14d46728edce360641e9d54ea7eeb41dc45e4a38feaec4', '2026-08-10 21:42:38'),
+(3, 'index.php', 1482, 69641, '34efa135ff437765c3f96448f687c536e7266315b8e0bb3ef5bd86256a38c29d', '2026-08-10 21:42:38'),
+(4, 'equipos.php', 2447, 106745, '5b09716096c2b739a4d76c2356e8c6352adafd8e157cb2884ef6fc420b8f0524', '2026-08-10 21:42:38'),
+(5, 'robo_banco.php', 879, 48755, 'c1415daa70a610c51846cff3b6dddf1e2e12f6f968af5867e8e6af505904cb77', '2026-08-10 21:42:38'),
+(6, 'conf/functions.php', 1221, 39750, '4aebf254c658e2a2c831a4f79a492e9997788e0b9cb7a3938fe748f52ef6d250', '2026-08-10 21:42:38');
+
+--
+-- Índices para tablas volcadas
+--
+
+--
+-- Indices de la tabla `configuracion_hackathon`
+--
 ALTER TABLE `configuracion_hackathon`
-  ADD COLUMN IF NOT EXISTS `hackathon_iniciado` TINYINT(1) DEFAULT 0 AFTER `id`,
-  ADD COLUMN IF NOT EXISTS `tiempo_inicio_global` DATETIME DEFAULT NULL AFTER `hackathon_iniciado`,
-  ADD COLUMN IF NOT EXISTS `duracion_minutos` INT DEFAULT 90 AFTER `tiempo_inicio_global`,
-  ADD COLUMN IF NOT EXISTS `creado_en` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP AFTER `duracion_minutos`;
+  ADD PRIMARY KEY (`id`);
 
+--
+-- Indices de la tabla `desafios_completados`
+--
+ALTER TABLE `desafios_completados`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `equipo_id` (`equipo_id`);
+
+--
+-- Indices de la tabla `equipos`
+--
+ALTER TABLE `equipos`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nombre_equipo` (`nombre_equipo`),
+  ADD UNIQUE KEY `codigo_equipo` (`codigo_equipo`);
+
+--
+-- Indices de la tabla `participantes`
+--
+ALTER TABLE `participantes`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `cedula` (`cedula`),
+  ADD KEY `equipo_id` (`equipo_id`);
+
+--
+-- Indices de la tabla `sys_cfg`
+--
+ALTER TABLE `sys_cfg`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `k` (`k`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `configuracion_hackathon`
+--
 ALTER TABLE `configuracion_hackathon`
-  MODIFY COLUMN `id` INT NOT NULL AUTO_INCREMENT,
-  MODIFY COLUMN `hackathon_iniciado` TINYINT(1) DEFAULT 0,
-  MODIFY COLUMN `tiempo_inicio_global` DATETIME DEFAULT NULL,
-  MODIFY COLUMN `duracion_minutos` INT DEFAULT 90,
-  MODIFY COLUMN `creado_en` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
+--
+-- AUTO_INCREMENT de la tabla `desafios_completados`
+--
 ALTER TABLE `desafios_completados`
-  ADD COLUMN IF NOT EXISTS `equipo_id` INT DEFAULT NULL AFTER `id`,
-  ADD COLUMN IF NOT EXISTS `desafio_id` VARCHAR(50) DEFAULT NULL AFTER `equipo_id`,
-  ADD COLUMN IF NOT EXISTS `completado_en` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP AFTER `desafio_id`;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=273;
 
+--
+-- AUTO_INCREMENT de la tabla `equipos`
+--
+ALTER TABLE `equipos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+
+--
+-- AUTO_INCREMENT de la tabla `participantes`
+--
+ALTER TABLE `participantes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
+
+--
+-- AUTO_INCREMENT de la tabla `sys_cfg`
+--
+ALTER TABLE `sys_cfg`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- Restricciones para tablas volcadas
+--
+
+--
+-- Filtros para la tabla `desafios_completados`
+--
 ALTER TABLE `desafios_completados`
-  MODIFY COLUMN `id` INT NOT NULL AUTO_INCREMENT,
-  MODIFY COLUMN `equipo_id` INT DEFAULT NULL,
-  MODIFY COLUMN `desafio_id` VARCHAR(50) DEFAULT NULL,
-  MODIFY COLUMN `completado_en` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP;
+  ADD CONSTRAINT `desafios_completados_ibfk_1` FOREIGN KEY (`equipo_id`) REFERENCES `equipos` (`id`) ON DELETE CASCADE;
 
-ALTER TABLE `equipos`
-  ADD COLUMN IF NOT EXISTS `nombre_equipo` VARCHAR(100) NOT NULL AFTER `id`,
-  ADD COLUMN IF NOT EXISTS `codigo_equipo` VARCHAR(10) NOT NULL AFTER `nombre_equipo`,
-  ADD COLUMN IF NOT EXISTS `tiempo_inicio` DATETIME DEFAULT NULL AFTER `codigo_equipo`,
-  ADD COLUMN IF NOT EXISTS `puntuacion_total` INT DEFAULT 0 AFTER `tiempo_inicio`,
-  ADD COLUMN IF NOT EXISTS `inicio_tardio` TINYINT(1) DEFAULT 0 AFTER `puntuacion_total`,
-  ADD COLUMN IF NOT EXISTS `creado_en` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP AFTER `inicio_tardio`,
-  ADD COLUMN IF NOT EXISTS `estado` TINYINT DEFAULT 0 COMMENT '0: En espera, 1: Compitiendo' AFTER `creado_en`,
-  ADD COLUMN IF NOT EXISTS `actualizado_en` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER `estado`,
-  ADD COLUMN IF NOT EXISTS `tiempo_acumulado` INT DEFAULT 0 AFTER `actualizado_en`,
-  ADD COLUMN IF NOT EXISTS `tiempo_finalizacion` DATETIME DEFAULT NULL AFTER `tiempo_acumulado`,
-  ADD COLUMN IF NOT EXISTS `desafios_completados` INT DEFAULT 0 AFTER `tiempo_finalizacion`,
-  ADD COLUMN IF NOT EXISTS `completado` TINYINT(1) DEFAULT 0 AFTER `desafios_completados`;
-
-ALTER TABLE `equipos`
-  MODIFY COLUMN `id` INT NOT NULL AUTO_INCREMENT,
-  MODIFY COLUMN `nombre_equipo` VARCHAR(100) NOT NULL,
-  MODIFY COLUMN `codigo_equipo` VARCHAR(10) NOT NULL,
-  MODIFY COLUMN `tiempo_inicio` DATETIME DEFAULT NULL,
-  MODIFY COLUMN `puntuacion_total` INT DEFAULT 0,
-  MODIFY COLUMN `inicio_tardio` TINYINT(1) DEFAULT 0,
-  MODIFY COLUMN `creado_en` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  MODIFY COLUMN `estado` TINYINT DEFAULT 0 COMMENT '0: En espera, 1: Compitiendo',
-  MODIFY COLUMN `actualizado_en` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  MODIFY COLUMN `tiempo_acumulado` INT DEFAULT 0,
-  MODIFY COLUMN `tiempo_finalizacion` DATETIME DEFAULT NULL,
-  MODIFY COLUMN `desafios_completados` INT DEFAULT 0,
-  MODIFY COLUMN `completado` TINYINT(1) DEFAULT 0;
-
+--
+-- Filtros para la tabla `participantes`
+--
 ALTER TABLE `participantes`
-  ADD COLUMN IF NOT EXISTS `nombre` VARCHAR(100) NOT NULL AFTER `id`,
-  ADD COLUMN IF NOT EXISTS `cedula` VARCHAR(20) NOT NULL AFTER `nombre`,
-  ADD COLUMN IF NOT EXISTS `equipo_id` INT DEFAULT NULL AFTER `cedula`,
-  ADD COLUMN IF NOT EXISTS `creado_en` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP AFTER `equipo_id`;
-
-ALTER TABLE `participantes`
-  MODIFY COLUMN `id` INT NOT NULL AUTO_INCREMENT,
-  MODIFY COLUMN `nombre` VARCHAR(100) NOT NULL,
-  MODIFY COLUMN `cedula` VARCHAR(20) NOT NULL,
-  MODIFY COLUMN `equipo_id` INT DEFAULT NULL,
-  MODIFY COLUMN `creado_en` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP;
-
-SET @fk_exists := (
-  SELECT COUNT(*)
-  FROM information_schema.KEY_COLUMN_USAGE
-  WHERE TABLE_SCHEMA = DATABASE()
-    AND TABLE_NAME = 'desafios_completados'
-    AND CONSTRAINT_NAME = 'desafios_completados_ibfk_1'
-);
-SET @fk_sql := IF(@fk_exists = 0,
-  'ALTER TABLE `desafios_completados` ADD CONSTRAINT `desafios_completados_ibfk_1` FOREIGN KEY (`equipo_id`) REFERENCES `equipos` (`id`) ON DELETE CASCADE',
-  'SELECT 1'
-);
-PREPARE stmt FROM @fk_sql;
-EXECUTE stmt;
-DEALLOCATE PREPARE stmt;
-
-SET @fk_exists := (
-  SELECT COUNT(*)
-  FROM information_schema.KEY_COLUMN_USAGE
-  WHERE TABLE_SCHEMA = DATABASE()
-    AND TABLE_NAME = 'participantes'
-    AND CONSTRAINT_NAME = 'participantes_ibfk_1'
-);
-SET @fk_sql := IF(@fk_exists = 0,
-  'ALTER TABLE `participantes` ADD CONSTRAINT `participantes_ibfk_1` FOREIGN KEY (`equipo_id`) REFERENCES `equipos` (`id`) ON DELETE CASCADE',
-  'SELECT 1'
-);
-PREPARE stmt FROM @fk_sql;
-EXECUTE stmt;
-DEALLOCATE PREPARE stmt;
-
-INSERT INTO `configuracion_hackathon` (`id`, `hackathon_iniciado`, `tiempo_inicio_global`, `duracion_minutos`, `creado_en`)
-VALUES (1, 1, '2025-11-12 14:59:37', 5, '2025-10-30 13:44:43')
-ON DUPLICATE KEY UPDATE
-  `hackathon_iniciado` = VALUES(`hackathon_iniciado`),
-  `tiempo_inicio_global` = VALUES(`tiempo_inicio_global`),
-  `duracion_minutos` = VALUES(`duracion_minutos`),
-  `creado_en` = VALUES(`creado_en`);
-
-INSERT INTO `equipos` (`id`, `nombre_equipo`, `codigo_equipo`, `tiempo_inicio`, `puntuacion_total`, `inicio_tardio`, `creado_en`, `estado`, `actualizado_en`, `tiempo_acumulado`, `tiempo_finalizacion`, `desafios_completados`, `completado`)
-VALUES
-  (33, 'ANGELES DE INFORMATICA', 'WY4UEQ', '2025-11-12 14:59:37', 0, 0, '2025-11-11 14:40:01', 1, '2025-11-12 14:59:37', 0, NULL, 0, 0),
-  (34, 'Prueba', 'BVPFGD', '2025-11-12 14:59:37', 0, 0, '2025-11-11 17:54:56', 1, '2025-11-12 14:59:37', 0, NULL, 0, 0)
-ON DUPLICATE KEY UPDATE
-  `nombre_equipo` = VALUES(`nombre_equipo`),
-  `codigo_equipo` = VALUES(`codigo_equipo`),
-  `tiempo_inicio` = VALUES(`tiempo_inicio`),
-  `puntuacion_total` = VALUES(`puntuacion_total`),
-  `inicio_tardio` = VALUES(`inicio_tardio`),
-  `creado_en` = VALUES(`creado_en`),
-  `estado` = VALUES(`estado`),
-  `actualizado_en` = VALUES(`actualizado_en`),
-  `tiempo_acumulado` = VALUES(`tiempo_acumulado`),
-  `tiempo_finalizacion` = VALUES(`tiempo_finalizacion`),
-  `desafios_completados` = VALUES(`desafios_completados`),
-  `completado` = VALUES(`completado`);
-
-INSERT INTO `participantes` (`id`, `nombre`, `cedula`, `equipo_id`, `creado_en`)
-VALUES
-  (64, 'jose', '10101010', 33, '2025-11-11 14:40:01'),
-  (65, 'angel', '20202020', 33, '2025-11-11 14:40:01'),
-  (66, 'OTRO', '303030', 33, '2025-11-11 14:40:01'),
-  (67, 'OTROS', '505050', 33, '2025-11-11 14:40:01'),
-  (68, 'Jsudbsj', '30692052', 34, '2025-11-11 17:54:56'),
-  (69, 'Bcksbxj', '98765555', 34, '2025-11-11 17:54:56'),
-  (70, 'Kslakdosj', '1738172', 34, '2025-11-11 17:54:56'),
-  (71, 'Oaldmaal', '99988877', 34, '2025-11-11 17:54:56')
-ON DUPLICATE KEY UPDATE
-  `nombre` = VALUES(`nombre`),
-  `cedula` = VALUES(`cedula`),
-  `equipo_id` = VALUES(`equipo_id`),
-  `creado_en` = VALUES(`creado_en`);
-
-ALTER TABLE `configuracion_hackathon` AUTO_INCREMENT = 2;
-ALTER TABLE `desafios_completados` AUTO_INCREMENT = 195;
-ALTER TABLE `equipos` AUTO_INCREMENT = 35;
-ALTER TABLE `participantes` AUTO_INCREMENT = 72;
-
+  ADD CONSTRAINT `participantes_ibfk_1` FOREIGN KEY (`equipo_id`) REFERENCES `equipos` (`id`) ON DELETE CASCADE;
 COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
