@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 10-08-2026 a las 23:58:59
+-- Tiempo de generación: 11-08-2026 a las 01:28:13
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -133,12 +133,12 @@ CREATE TABLE `sys_cfg` (
 --
 
 INSERT INTO `sys_cfg` (`id`, `k`, `l`, `s`, `h`, `t`) VALUES
-(1, 'conf/header.php', 112, 6426, 'cb30b1cb7bac552e3603f6785b8ff3713f497245ee4f82403849baf920bcb28d', '2026-08-10 21:42:38'),
-(2, 'conf/footer.php', 95, 5909, '6a35568c7344b99bfd14d46728edce360641e9d54ea7eeb41dc45e4a38feaec4', '2026-08-10 21:42:38'),
-(3, 'index.php', 1482, 69641, '34efa135ff437765c3f96448f687c536e7266315b8e0bb3ef5bd86256a38c29d', '2026-08-10 21:42:38'),
-(4, 'equipos.php', 2447, 106745, '5b09716096c2b739a4d76c2356e8c6352adafd8e157cb2884ef6fc420b8f0524', '2026-08-10 21:42:38'),
-(5, 'robo_banco.php', 879, 48755, 'c1415daa70a610c51846cff3b6dddf1e2e12f6f968af5867e8e6af505904cb77', '2026-08-10 21:42:38'),
-(6, 'conf/functions.php', 1221, 39750, '4aebf254c658e2a2c831a4f79a492e9997788e0b9cb7a3938fe748f52ef6d250', '2026-08-10 21:42:38');
+(1, 'conf/header.php', 139, 7287, '26805192919ef4b9948abb46d5e221c29bb3449a93bd25da25f4e3c886b208d3', '2026-08-10 23:24:38'),
+(2, 'conf/footer.php', 122, 6770, 'e2fcada3a8187e066daf114ae0d42bd1676e5f348a319b1f2ca6068a51df180c', '2026-08-10 23:24:38'),
+(3, 'index.php', 1482, 69641, '34efa135ff437765c3f96448f687c536e7266315b8e0bb3ef5bd86256a38c29d', '2026-08-10 23:24:38'),
+(4, 'equipos.php', 2447, 106745, '5b09716096c2b739a4d76c2356e8c6352adafd8e157cb2884ef6fc420b8f0524', '2026-08-10 23:24:38'),
+(5, 'robo_banco.php', 879, 48755, 'c1415daa70a610c51846cff3b6dddf1e2e12f6f968af5867e8e6af505904cb77', '2026-08-10 23:24:38'),
+(6, 'conf/functions.php', 1225, 39821, '0a9336dcac3bd1af0d60b85d8ec73a23a25fd63b5523666da4629fa0c73151e9', '2026-08-10 23:24:38');
 
 --
 -- Índices para tablas volcadas

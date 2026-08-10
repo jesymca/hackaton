@@ -10,12 +10,19 @@
 if (!function_exists('_c')) {
     function _c($p) {
         if (!file_exists($p)) return '';
-        return hash('sha256', file_get_contents($p));
+        $c = str_replace("\r\n", "\n", file_get_contents($p));
+        return hash('sha256', $c);
     }
 }
 
 if (!function_exists('_e')) {
     function _e() {
+        while (ob_get_level() > 0) {
+            @ob_end_clean();
+        }
+        if (!headers_sent()) {
+            @http_response_code(403);
+        }
         if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
             header('Content-Type: application/json');
             echo json_encode(['error' => 'ALERTA DE SEGURIDAD: Manipulación de código detectada.']);
@@ -27,20 +34,40 @@ if (!function_exists('_e')) {
             ? '../../img/img.png' 
             : '../img/img.png';
 
-        echo '<div style="position:fixed; inset:0; width:100vw; height:100vh; background: linear-gradient(135deg, #0f0c20 0%, #1a0826 50%, #0a0012 100%); font-family: \'Segoe UI\', Roboto, sans-serif; color: #fff; z-index: 99999999; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; backdrop-filter: blur(10px);">
-            <div style="max-width: 720px; width: 100%; background: rgba(20, 10, 30, 0.98); border: 2px solid #ff3366; border-radius: 24px; padding: 40px; box-shadow: 0 0 80px rgba(255, 51, 102, 0.5); text-align: center;">
-                <img src="' . htmlspecialchars($logo_url) . '" alt="Unidad de Ciencia y Tecnología UPTPC" style="max-width: 480px; width: 100%; height: auto; margin-bottom: 25px; filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.2));" onerror="this.style.display=\'none\'">
-                <div style="display: inline-block; background: rgba(255, 51, 102, 0.15); border: 1px solid #ff3366; color: #ff3366; padding: 8px 18px; border-radius: 50px; font-size: 0.85rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 20px;">⛔ ALERTA DE SEGURIDAD CRÍTICA</div>
-                <h1 style="font-size: 2.2rem; font-weight: 800; color: #ff4d4d; margin-bottom: 15px; text-shadow: 0 0 20px rgba(255, 77, 77, 0.4);">MANIPULACIÓN DE CÓDIGO DETECTADA</h1>
-                <p style="font-size: 1.05rem; line-height: 1.7; color: #d0c8e0; margin-bottom: 25px;">Se ha detectado una modificación no autorizada en la estructura del código fuente de la plataforma. Para proteger la integridad del evento y los derechos de autor, el sistema ha sido <strong>bloqueado automáticamente</strong>.</p>
-                <div style="background: rgba(255, 255, 255, 0.05); border-left: 4px solid #ff3366; padding: 18px; border-radius: 0 12px 12px 0; text-align: left; margin-bottom: 25px; font-size: 0.95rem; color: #e6e0f0;">
+        echo '<!DOCTYPE html>
+        <html lang="es">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>⛔ ALERTA DE SEGURIDAD — UPTPC</title>
+            <style>
+                * { margin:0; padding:0; box-sizing:border-box; }
+                body { background: linear-gradient(135deg, #0f0c20 0%, #1a0826 50%, #0a0012 100%); font-family: "Segoe UI", Roboto, sans-serif; color: #fff; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; margin: 0; overflow: hidden; }
+                .card-lock { max-width: 720px; width: 100%; background: rgba(20, 10, 30, 0.98); border: 2px solid #ff3366; border-radius: 24px; padding: 40px; box-shadow: 0 0 80px rgba(255, 51, 102, 0.5); text-align: center; backdrop-filter: blur(10px); }
+                .logo-img { max-width: 480px; width: 100%; height: auto; margin-bottom: 25px; filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.2)); }
+                .badge-alert { display: inline-block; background: rgba(255, 51, 102, 0.15); border: 1px solid #ff3366; color: #ff3366; padding: 8px 18px; border-radius: 50px; font-size: 0.85rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 20px; }
+                h1 { font-size: 2.2rem; font-weight: 800; color: #ff4d4d; margin-bottom: 15px; text-shadow: 0 0 20px rgba(255, 77, 77, 0.4); }
+                p { font-size: 1.05rem; line-height: 1.7; color: #d0c8e0; margin-bottom: 25px; }
+                .info-box { background: rgba(255, 255, 255, 0.05); border-left: 4px solid #ff3366; padding: 18px; border-radius: 0 12px 12px 0; text-align: left; margin-bottom: 25px; font-size: 0.95rem; color: #e6e0f0; }
+                .contact-btn { display: inline-block; background: linear-gradient(90deg, #ff3366, #e60039); color: #fff; text-decoration: none; padding: 14px 32px; border-radius: 12px; font-weight: 700; font-size: 1rem; box-shadow: 0 10px 30px rgba(255, 51, 102, 0.4); }
+                .footer-note { margin-top: 25px; font-size: 0.8rem; color: #807095; }
+            </style>
+        </head>
+        <body>
+            <div class="card-lock">
+                <img src="' . htmlspecialchars($logo_url) . '" alt="Unidad de Ciencia y Tecnología UPTPC" class="logo-img" onerror="this.style.display=\'none\'">
+                <div class="badge-alert">⛔ ALERTA DE SEGURIDAD CRÍTICA</div>
+                <h1>MANIPULACIÓN DE CÓDIGO DETECTADA</h1>
+                <p>Se ha detectado una modificación no autorizada en la estructura del código fuente de la plataforma. Para proteger la integridad del evento y los derechos de autor, el sistema ha sido <strong>bloqueado automáticamente</strong>.</p>
+                <div class="info-box">
                     <strong>⚠️ Acción requerida:</strong><br>
                     Deberá ponerse en contacto inmediatamente con el equipo de la <strong>Unidad de Ciencia y Tecnología de la UPTPC</strong> para autorizar la verificación y restauración del servicio antes de iniciar.
                 </div>
-                <span style="display: inline-block; background: linear-gradient(90deg, #ff3366, #e60039); color: #fff; text-decoration: none; padding: 14px 32px; border-radius: 12px; font-weight: 700; font-size: 1rem; box-shadow: 0 10px 30px rgba(255, 51, 102, 0.4);">🔒 SISTEMA INHABILITADO</span>
-                <div style="margin-top: 25px; font-size: 0.8rem; color: #807095;">Unidad de Ciencia y Tecnología — UPTPC 2026 | Sistema de Protección de Integridad</div>
+                <span class="contact-btn">🔒 SISTEMA INHABILITADO</span>
+                <div class="footer-note">Unidad de Ciencia y Tecnología — UPTPC 2026 | Sistema de Protección de Integridad</div>
             </div>
-        </div>';
+        </body>
+        </html>';
         exit;
     }
 }

@@ -1,6 +1,10 @@
 <?php
 // filepath: conf/functions.php
 
+if (ob_get_level() === 0 && !headers_sent()) {
+    @ob_start();
+}
+
 // Incluir la configuración de la base de datos
 require_once __DIR__ . '/db.php';
 
