@@ -43,7 +43,7 @@
                             <div class="card-body p-4">
                                 <h3 class="card-title">Hackathon 2025</h3>
                                 <p class="card-text">Accede a la colección original del evento 2025 con sus desafíos y flujo de equipos.</p>
-                                <a href="http://localhost/hackaton/2025/index.php" class="btn btn-primary w-100">Entrar a 2025</a>
+                                <a href="2025/index.php" class="btn btn-primary w-100">Entrar a 2025</a>
                             </div>
                         </div>
                     </div>
@@ -53,7 +53,7 @@
                             <div class="card-body p-4">
                                 <h3 class="card-title">Hackathon 2026</h3>
                                 <p class="card-text">Entra al nuevo evento 2026 con su propio conjunto de retos y navegación independiente.</p>
-                                <a href="http://localhost/hackaton/2026/index.php" class="btn btn-success w-100">Entrar a 2026</a>
+                                <a href="2026/index.php" class="btn btn-success w-100">Entrar a 2026</a>
                             </div>
                         </div>
                     </div>

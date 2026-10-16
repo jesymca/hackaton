@@ -998,7 +998,7 @@ echo $header;
     <source src="audios/una_defensa_a_sido_comprometida.mp3" type="audio/mpeg">
 </audio>
 <audio id="audioBandera1_4" preload="auto">
-    <source src="audios/pero_que_esta_pasando?_varias_personas_han_logrado_pasar_nuestra_primera_defensa.mp3" type="audio/mpeg">
+    <source src="audios/pero_que_esta_pasando_varias_personas_han_logrado_pasar_nuestra_primera_defensa.mp3" type="audio/mpeg">
 </audio>
 <audio id="audioBandera1_5" preload="auto">
     <source src="audios/alguien_a_tumbado_nuestra_primera_defensa.mp3" type="audio/mpeg">

@@ -76,6 +76,8 @@ if (!function_exists('_e')) {
     }
 }
 
+require_once __DIR__ . '/functions.php';
+
 if (!function_exists('_f_chk')) {
     function _f_chk() {
         if (!function_exists('_d') || !function_exists('_a') || !function_exists('_b') || !function_exists('_c')) {

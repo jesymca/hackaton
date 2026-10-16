@@ -4,6 +4,7 @@
 // Unidad de Ciencia y Tecnología — UPTPC 2026
 // ============================================================
 session_start();
+require_once __DIR__ . '/conf/functions.php';
 // ── Cabecera modular ─────────────────────────────────────────────────────────
 $page_title = '📖 Documentación Técnica de Desafíos — Hackathon 2026 UPTPC';
 require_once __DIR__ . '/conf/header.php';
@@ -240,7 +241,7 @@ echo $header;
             <a href="#d1" class="toc-item">1. Login Inseguro</a>
             <a href="#d2" class="toc-item">2. Criptografía Épica</a>
             <a href="#d3" class="toc-item">3. Buffer Overflow</a>
-            <a href="#d4" class="toc-item">4. Laberinto de URL (Caso 404)</a>
+            <a href="#d4" class="toc-item">4. Servidor SSH (Kali Linux)</a>
             <a href="#d5" class="toc-item">5. API REST Vulnerable</a>
             <a href="#d6" class="toc-item">6. Esteganografía Forense</a>
             <a href="#d7" class="toc-item">7. Reto de Astucia</a>
@@ -299,14 +300,14 @@ echo $header;
 
         <div class="section-box">
             <div class="section-tag">🛠️ Solución Oficial</div>
-            <p style="font-size:0.92rem; color:#cbd5e1;">Analiza el bloque cifrado presentado en la consola Cyberpunk. Aplica la decodificación por etapas según los patrones observados hasta reconstruir la frase/código original de la bandera.</p>
+            <p style="font-size:0.92rem; color:#cbd5e1;">Analiza el bloque cifrado presentado en la consola Cyberpunk. Aplica 10 rondas sucesivas de decodificación Base64 hasta obtener la clave original: <code>H4CK4TH0N_3P1C_D3CRYPT10N</code>. Al enviarla en el formulario (ya sea como texto plano o en formato <code>FLAG{...}</code>), obtendrás la bandera oficial: <code>FLAG{CRYPTO_MASTER}</code>.</p>
         </div>
 
         <div class="section-box">
             <div class="section-tag">🔀 Alternativas que pueden tomar los participantes</div>
             <ul class="alt-list">
-                <li><strong>Método 1 (CyberChef / Web Decoders):** Usar herramientas online tipo CyberChef o dcode.fr para probar identificadores automáticos de cifrado.</li>
-                <li><strong>Método 2 (Python Script):** Escribir un pequeño script en Python usando <code>base64</code> o transformaciones de cadenas.</li>
+                <li><strong>Método 1 (CyberChef / Web Decoders):</strong> Usar CyberChef agregando múltiples operaciones de <em>From Base64</em> consecutivas.</li>
+                <li><strong>Método 2 (Python Script):</strong> Escribir un pequeño bucle en Python con <code>base64.b64decode()</code> hasta obtener texto legible.</li>
             </ul>
         </div>
     </div>
@@ -343,29 +344,28 @@ echo $header;
     <!-- DESAFÍO 4 -->
     <div class="challenge-card" id="d4">
         <div class="challenge-header">
-            <div class="challenge-title">Desafío 4: Análisis de URL y Laberinto Web (<code>desafio_4/</code>)</div>
+            <div class="challenge-title">Desafío 4: Consola de Servidor Web Kali Linux SSH (<code>desafio4.php</code>)</div>
             <span class="challenge-num">Reto #4</span>
         </div>
         
         <div class="section-box">
             <div class="section-tag">🧠 Conocimientos Requeridos</div>
             <ul class="knowledge-list">
-                <li>Navegación web, estructura de URLs y parámetros GET.</li>
-                <li>Deducción lógica y capacidad de trazabilidad de enlaces.</li>
+                <li>Uso de consola Linux, comandos de navegación y lectura (<code>ls</code>, <code>cd</code>, <code>cat</code>).</li>
+                <li>Conexiones remotas SSH y elevación de privilegios en entornos UNIX (<code>sudo su</code>).</li>
             </ul>
         </div>
 
         <div class="section-box">
             <div class="section-tag">🛠️ Solución Oficial</div>
-            <p style="font-size:0.92rem; color:#cbd5e1;">Inicia en <code>inicio.php</code>. Siguiendo la pista del "Caso 404", ingresa el valor <code>404</code> o explora las rutas correctas evitando las páginas trampa como <code>kernel_panic.php</code> o <code>codigo_infinito.php</code> hasta llegar a <code>flag_real.php</code>.</p>
+            <p style="font-size:0.92rem; color:#cbd5e1;">Abre la terminal interactiva estilo Kali Linux en <code>desafio4.php</code>. Conéctate al servidor mediante <code>ssh invitado@server-hackaton.uptpc.edu.ve</code>. Explora los directorios confidenciales navegando a <code>/etc/secret_vault</code>, eleva privilegios con <code>sudo su</code> y visualiza <code>cat /etc/secret_vault/flag_confidencial.txt</code> o recupera los sectores para obtener la bandera: <code>FLAG{SERVER_TERMINAL_MASTER_2026}</code>.</p>
         </div>
 
         <div class="section-box">
             <div class="section-tag">🔀 Alternativas que pueden tomar los participantes</div>
             <ul class="alt-list">
-                <li><strong>Método 1 (Resolución de Pistas):** Resolver cada acertijo textual de cada pantalla para elegir la URL correcta.</li>
-                <li><strong>Método 2 (Inspección de Enlaces):** Pasar el cursor sobre los enlaces para analizar los atributos <code>href</code> de la página antes de hacer clic.</li>
-                <li><strong>Método 3 (Fuzzing / Mapeo):** Inspeccionar el directorio o probar nombres de archivos comunes en la barra de direcciones.</li>
+                <li><strong>Método 1 (Exploración de Sectores):</strong> Leer los archivos de los 3 sectores del sistema y enviar la clave en el panel inferior.</li>
+                <li><strong>Método 2 (Elevación Sudo):</strong> Ejecutar <code>sudo su</code> en la sesión SSH y leer directamente el archivo restringido del root.</li>
             </ul>
         </div>
     </div>
@@ -393,8 +393,8 @@ echo $header;
         <div class="section-box">
             <div class="section-tag">🔀 Alternativas que pueden tomar los participantes</div>
             <ul class="alt-list">
-                <li><strong>Método 1 (API Lab Frontend):** Usar la interfaz web provista en <code>api_lab.html</code> para hacer las peticiones.</li>
-                <li><strong>Método 2 (Postman / cURL):** Consumir la API directamente desde Postman o cURL en consola.</li>
+                <li><strong>Método 1 (API Lab Frontend):</strong> Usar la interfaz web interactiva provista en <code>api_lab.php</code> para enviar las peticiones sin disparar el honeypot.</li>
+                <li><strong>Método 2 (Navegador DevTools):</strong> Ejecutar la petición <code>fetch()</code> directamente desde la consola JavaScript del navegador.</li>
             </ul>
         </div>
     </div>
@@ -409,21 +409,21 @@ echo $header;
         <div class="section-box">
             <div class="section-tag">🧠 Conocimientos Requeridos</div>
             <ul class="knowledge-list">
-                <li>Informática forense básica e inspección de archivos multimedia.</li>
-                <li>Uso de herramientas de análisis de metadatos o cadenas de texto en imágenes (strings / ExifTool).</li>
+                <li>Informática forense básica y técnicas de esteganografía digital (LSB - Least Significant Bit).</li>
+                <li>Uso de herramientas de análisis espectral / de bits en imágenes o scripts de procesamiento (Python PIL).</li>
             </ul>
         </div>
 
         <div class="section-box">
             <div class="section-tag">🛠️ Solución Oficial</div>
-            <p style="font-size:0.92rem; color:#cbd5e1;">Descarga la imagen del dossier (<code>hacker.png</code> o <code>luna.jpeg</code>) e inspecciona sus datos adjuntos o cadenas legibles para extraer el mensaje secreto y validarlo en el formulario.</p>
+            <p style="font-size:0.92rem; color:#cbd5e1;">Descarga la imagen del dossier <code>hacker.png</code> y extrae los bits menos significativos (LSB) de los canales RGB. El mensaje oculto extraído es: <code>el ataque sera al amanecer</code>. Introdúcelo en el formulario de descifrado del expediente para obtener la bandera oficial: <code>FLAG{STEGANOGRAPHY_SECRET}</code>.</p>
         </div>
 
         <div class="section-box">
             <div class="section-tag">🔀 Alternativas que pueden tomar los participantes</div>
             <ul class="alt-list">
-                <li><strong>Método 1 (Comando strings):** Ejecutar <code>strings hacker.png | grep FLAG</code> en terminal Linux/Git Bash.</li>
-                <li><strong>Método 2 (Apertura con Bloc de Notas):** Abrir la imagen en un editor de texto o visor de metadatos online.</li>
+                <li><strong>Método 1 (StegOnline / Herramientas Web):</strong> Cargar <code>hacker.png</code> en StegOnline o decodificadores LSB online.</li>
+                <li><strong>Método 2 (Script en Python):</strong> Escribir un script con la biblioteca <code>PIL/Pillow</code> que itere los bits LSB de cada píxel hasta formar bytes ASCII legibles.</li>
             </ul>
         </div>
     </div>
@@ -439,20 +439,23 @@ echo $header;
             <div class="section-tag">🧠 Conocimientos Requeridos</div>
             <ul class="knowledge-list">
                 <li>Protocolo HTTP y estructura de encabezados de respuesta (Response Headers).</li>
-                <li>Habilidad de observación y auditoría proactiva del entorno.</li>
+                <li>Inspección de código fuente DOM y eventos interactivos ocultos.</li>
             </ul>
         </div>
 
         <div class="section-box">
             <div class="section-tag">🛠️ Solución Oficial</div>
-            <p style="font-size:0.92rem; color:#cbd5e1;">Abre las herramientas de desarrollador (F12) en la página principal <code>index.php</code>, selecciona la pestaña <strong>Red (Network)</strong> y revisa las cabeceras de respuesta. Encontrarás: <code>X-Secret-Flag: FLAG{http_header_secret}</code>.</p>
+            <p style="font-size:0.92rem; color:#cbd5e1;">Este desafío recompensa la observación y ofrece dos vías de resolución válidas (ambas aceptadas por el validador):<br>
+            <strong>Vía A (Cabeceras HTTP):</strong> Abre DevTools (F12) en <code>index.php</code> ➔ pestaña Red (Network) ➔ inspecciona los Response Headers del documento principal donde hallarás <code>X-Secret-Flag: FLAG{HTTP_HEADER_SECRET}</code>.<br>
+            <strong>Vía B (Elemento Interactivo):</strong> En la pantalla de acceso de <code>index.php</code>, haz clic sobre el texto '¿Olvidaste tu contraseña?' para detonar la alerta con <code>FLAG{LOGIN_CLICKABLE_SECRET}</code>.</p>
         </div>
 
         <div class="section-box">
             <div class="section-tag">🔀 Alternativas que pueden tomar los participantes</div>
             <ul class="alt-list">
-                <li><strong>Método 1 (DevTools Network):** Pestaña Network ➔ Seleccionar <code>index.php</code> ➔ Response Headers.</li>
-                <li><strong>Método 2 (cURL Headers):** Ejecutar en consola <code>curl -I http://localhost/hackaton/2026/index.php</code>.</li>
+                <li><strong>Método 1 (DevTools Network):</strong> Pestaña Network ➔ Seleccionar <code>index.php</code> ➔ Response Headers.</li>
+                <li><strong>Método 2 (Inspección DOM):</strong> Buscar atributos <code>onclick</code> o funciones JavaScript en el formulario de inicio.</li>
+                <li><strong>Método 3 (cURL Headers):</strong> Ejecutar <code>curl -sI -H "User-Agent: Mozilla/5.0" http://localhost/hackaton/2026/index.php</code>.</li>
             </ul>
         </div>
     </div>

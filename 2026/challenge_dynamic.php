@@ -5,6 +5,7 @@
 // ============================================================
 
 session_start();
+require_once __DIR__ . '/conf/functions.php';
 
 define('TIEMPO_CAMBIO', 300); // 300 segundos (5 minutos) de validez
 
@@ -106,7 +107,7 @@ $tiempo_restante = max(0, TIEMPO_CAMBIO - (time() - $_SESSION['dynamic_challenge
 function obtenerPista($nivel) {
     $pistas = [
         1 => "🌊 Abre DevTools (F12) -> pestaña Red (Network), recarga la página y revisa los Response Headers de la petición. Encontrarás la cabecera 'X-Final-Challenge-Gateway: ?api_gateway=v2_token_endpoint&auth=UPTPC-2026-FINAL'.",
-        2 => "📦 Copia la URL secreta y ábrela en una nueva pestaña de tu navegador:<br><code>http://localhost/hackaton/2026/challenge_dynamic.php?api_gateway=v2_token_endpoint&auth=UPTPC-2026-FINAL</code>",
+        2 => "📦 Copia la URL secreta y ábrela en una nueva pestaña de tu navegador:<br><code>http://" . ($_SERVER['HTTP_HOST'] ?? 'localhost') . "/hackaton/2026/challenge_dynamic.php?api_gateway=v2_token_endpoint&auth=UPTPC-2026-FINAL</code>",
         3 => "🔑 En la nueva pestaña verás un texto JSON con el campo 'payload' (ejemplo: <code>\"payload\": \"NGY4YTU5...\"</code>). Copia ese valor.",
         4 => "⚡ El campo 'payload' está codificado en Base64. Debes decodificarlo para obtener el código de acceso.",
         5 => "🎯 Copia la clave hexadecimal de 16 caracteres decodificada, vuelve a esta pestaña y pégala en el campo de texto antes de que venza el temporizador de " . floor(TIEMPO_CAMBIO / 60) . " minuto(s)."

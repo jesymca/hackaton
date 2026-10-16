@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once __DIR__ . '/conf/functions.php';
 // ── Cabecera modular ─────────────────────────────────────────────────────────
 $page_title = 'API Lab — Hackathon UPTPC 2026';
 require_once __DIR__ . '/conf/header.php';

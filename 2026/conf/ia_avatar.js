@@ -29,6 +29,15 @@ class IAAvatarWidget {
         this.iniciarHablaEspontanea();
         // Actualizar nivel de enojo al inicio
         this.nivelEnojo = this.obtenerNivelEnojoEquipoActual();
+
+        // Si el hackatón aún no ha iniciado, anunciar con voz que no ha iniciado
+        if (!this.estaHackathonActivo()) {
+            setTimeout(() => {
+                if (!this.estaHackathonActivo()) {
+                    this.hablar("El Hackatón aún no ha iniciado. Mis servidores están en espera silenciosa.");
+                }
+            }, 1200);
+        }
     }
 
     // ========== MÉTODOS PARA OBTENER EQUIPO ACTUAL Y SU NIVEL ==========
@@ -170,17 +179,17 @@ class IAAvatarWidget {
     }
 
     estaHackathonActivo() {
-        const desafio = this.obtenerDesafioActual();
-        if (desafio && desafio !== 'index' && desafio !== 'equipos') {
-            return true;
-        }
         if (typeof window.hackathonActivoGlobal !== 'undefined') {
             return window.hackathonActivoGlobal === true;
         }
         if (typeof window.segundosRestantesGlobal !== 'undefined') {
             return window.segundosRestantesGlobal > 0;
         }
-        return true;
+        const desafio = this.obtenerDesafioActual();
+        if (desafio && desafio !== 'index' && desafio !== 'equipos') {
+            return true;
+        }
+        return false;
     }
 
     obtenerDesafioActual() {
@@ -298,26 +307,69 @@ class IAAvatarWidget {
 
         const cleanText = texto.replace(/[\#\*\_\`]/g, '').trim();
 
-        try {
-            if (this.currentAudio) {
+        // Detener cualquier audio o síntesis de voz en curso antes de emitir uno nuevo
+        if (this.currentAudio) {
+            try {
                 this.currentAudio.pause();
+                this.currentAudio.currentTime = 0;
+                this.currentAudio.src = '';
+            } catch(e){}
+            this.currentAudio = null;
+        }
+        if (this.synth) {
+            try {
+                this.synth.cancel();
+            } catch(e){}
+        }
+
+        // Flag para asegurar que NUNCA se reproduzcan dos voces al mismo tiempo
+        let vozReproducida = false;
+
+        const reproducirFallback = () => {
+            if (vozReproducida) return;
+            vozReproducida = true;
+            if (this.currentAudio) {
+                try {
+                    this.currentAudio.pause();
+                    this.currentAudio.currentTime = 0;
+                    this.currentAudio.src = '';
+                } catch(e){}
                 this.currentAudio = null;
             }
+            this.hablarWebSpeech(cleanText, nivel);
+        };
+
+        try {
             const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(cleanText)}&tl=es-MX&client=tw-ob`;
             const audio = new Audio(ttsUrl);
             audio.volume = 1.0;
+            audio.loop = false;
             this.currentAudio = audio;
+
+            audio.onended = () => {
+                if (this.currentAudio === audio) {
+                    this.currentAudio = null;
+                }
+            };
+
+            audio.onerror = () => {
+                reproducirFallback();
+            };
+
             const playPromise = audio.play();
             if (playPromise !== undefined) {
-                playPromise.catch(err => {
-                    this.hablarWebSpeech(cleanText, nivel);
+                playPromise.then(() => {
+                    // Google TTS se reprodujo con éxito: marcar como reproducida para NO llamar a WebSpeech
+                    vozReproducida = true;
+                }).catch(() => {
+                    reproducirFallback();
                 });
+            } else {
+                vozReproducida = true;
             }
         } catch(e) {
-            this.hablarWebSpeech(cleanText, nivel);
+            reproducirFallback();
         }
-
-        this.hablarWebSpeech(cleanText, nivel);
     }
 
     hablarWebSpeech(texto, nivel = null) {
@@ -862,12 +914,23 @@ class IAAvatarWidget {
     }
 }
 
-// ========== INSTANCIACIÓN ==========
-document.addEventListener('DOMContentLoaded', () => {
-    window.iaAvatarWidget = new IAAvatarWidget();
-    if (window.hackathonJustStarted && !window.iaAvatarWidget.esPaginaIndex()) {
-        setTimeout(() => {
-            if (window.iaAvatarWidget) window.iaAvatarWidget.gritoInicioHackathon();
-        }, 1500);
+// ========== INSTANCIACIÓN (SINGLETON) ==========
+if (!window.iaAvatarWidgetInstantiated) {
+    window.iaAvatarWidgetInstantiated = true;
+    const iniciarWidget = () => {
+        if (!window.iaAvatarWidget) {
+            window.iaAvatarWidget = new IAAvatarWidget();
+            if (window.hackathonJustStarted && !window.iaAvatarWidget.esPaginaIndex()) {
+                setTimeout(() => {
+                    if (window.iaAvatarWidget) window.iaAvatarWidget.gritoInicioHackathon();
+                }, 1500);
+            }
+        }
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', iniciarWidget);
+    } else {
+        iniciarWidget();
     }
-});
+}

@@ -12,6 +12,149 @@ require_once __DIR__ . '/db.php';
 $db = $pdo;
 
 /**
+ * ============================================================
+ * SISTEMA ANTI-TERMINAL / HONEYPOT DE BANDERAS FALSAS (UPTPC 2026)
+ * Detecta intentos de resolución por consola (curl, python, wget, etc.)
+ * y responde con una trampa de 50 banderas falsas para hacerlos perder tiempo.
+ * ============================================================
+ */
+function obtenerBanderasFalsas() {
+    return [
+        'FLAG{INSPECCION_CODIGO_DEV_SECRET}',
+        'FLAG{CRYPTO_KEY_DECRYPTED_9941A}',
+        'FLAG{STACK_OVERFLOW_CANARY_0x7FFE42}',
+        'FLAG{SERVER_TERMINAL_ROOT_MASTER_2026}',
+        'FLAG{API_ADMIN_BEARER_AUTH_TOKEN_V2}',
+        'FLAG{STEGO_LSB_EXTRACTED_SECRET_BYTE}',
+        'FLAG{IDOR_VULN_PRIVILEGE_ELEVATION}',
+        'FLAG{BIOMETRIC_GRID_AUTH_BYPASS_9X}',
+        'FLAG{CSRF_BANK_TRANSACTION_EXPLOIT_OK}',
+        'FLAG{DYNAMIC_GATEWAY_AUTH_UPTPC_2026}',
+        'FLAG{8f14e2c90ab5731df468e2b109c84fa2}',
+        'FLAG{e7a3c89b2f1d4e068a9b2c3d4e5f6071}',
+        'FLAG{4c9b1e7f0d8a5c2e3b6a9f1d0e4c8b2a}',
+        'FLAG{9b2a7d4e1f8c0e6b5a3d1c9e7f4b0a8d}',
+        'FLAG{b3f7a1e0c9d4b6e8a2f5c1d0e7b9a4c2}',
+        'FLAG{SQLI_PAYLOAD_ADMIN_BYPASS_TRUE}',
+        'FLAG{JWT_SIGNATURE_ALGO_NONE_EXPLOIT}',
+        'FLAG{XSS_DOM_INJECTION_REFLECTED_KEY}',
+        'FLAG{SSRF_METADATA_INSTANCE_SECRET}',
+        'FLAG{REVERSE_SHELL_PAYLOAD_PORT_4444}',
+        'FLAG{MEMORY_LEAK_POINTER_0x55AAEF80}',
+        'FLAG{KERNEL_EXPLOIT_DIRTY_PIPE_ROOT}',
+        'FLAG{AES_256_CBC_IV_RECOVERY_SUCCESS}',
+        'FLAG{RSA_PRIVATE_KEY_EXPONENT_FACTOR}',
+        'FLAG{SHA256_COLLISION_BLOCK_FOUND}',
+        'FLAG{SESSION_HIJACK_COOKIE_PHPSESSID}',
+        'FLAG{X_FORWARDED_FOR_BYPASS_INTERNAL}',
+        'FLAG{REMOTE_CODE_EXECUTION_CVE_2026}',
+        'FLAG{LOCAL_FILE_INCLUSION_ETC_PASSWD}',
+        'FLAG{DIRECTORY_TRAVERSAL_DOT_DOT_SLASH}',
+        'FLAG{COMMAND_INJECTION_SEMICOLON_SH}',
+        'FLAG{OPEN_REDIRECT_VULN_OAUTH_TOKEN}',
+        'FLAG{BRUTE_FORCE_HASHCAT_MASK_FOUND}',
+        'FLAG{METASPLOIT_METERPRETER_STAGER}',
+        'FLAG{BURP_SUITE_INTERCEPT_PROXY_KEY}',
+        'FLAG{GHIDRA_DECOMPILED_MAIN_RETURN}',
+        'FLAG{PWNTOOLS_REMOTE_INTERACTIVE_WIN}',
+        'FLAG{RADARE2_DISASSEMBLY_JMP_EAX}',
+        'FLAG{GDB_DEBUGGER_BREAKPOINT_HIT}',
+        'FLAG{STRINGS_BINARY_GREP_RESULT_FLAG}',
+        'FLAG{UPTPC_CYBER_VAULT_KEY_ALPHA}',
+        'FLAG{UPTPC_CYBER_VAULT_KEY_BETA}',
+        'FLAG{UPTPC_CYBER_VAULT_KEY_GAMMA}',
+        'FLAG{UPTPC_CYBER_VAULT_KEY_OMEGA}',
+        'FLAG{UPTPC_CYBER_VAULT_KEY_SIGMA}',
+        'FLAG{SECRET_ENDPOINT_V2_TOKEN_VALID}',
+        'FLAG{AUTH_HEADER_GATEWAY_PASS_2026}',
+        'FLAG{DATABASE_STAGING_SECRETS_TABLE}',
+        'FLAG{ENVIRONMENT_PRODUCTION_FLAG_STG}',
+        'FLAG{UPTPC_HACKATHON_FINAL_MASTER_KEY}'
+    ];
+}
+
+function mostrarTrampaTerminal() {
+    if (!headers_sent()) {
+        header('Content-Type: text/plain; charset=utf-8');
+    }
+    
+    $falsas = obtenerBanderasFalsas();
+    
+    echo "╔══════════════════════════════════════════════════════════════════════════════════════════╗\n";
+    echo "║        [!] UPTPC CYBER DEFENSE KERNEL — DIRECT DIAGNOSTIC INTERFACE V2.6                 ║\n";
+    echo "║               SECURITY AUDIT ENVIRONMENT // INTERNAL MEMORY SEGMENT                      ║\n";
+    echo "╚══════════════════════════════════════════════════════════════════════════════════════════╝\n\n";
+    echo " [!] WARNING: Direct socket access detected via CLI / Raw HTTP interface.\n";
+    echo " [!] SYSTEM_DIAGNOSTIC_MODE = ACTIVE (STAGING_ENVIRONMENT: UPTPC-CYBER-2026)\n";
+    echo " [+] Core dump initialized: Reading decrypted memory block from vault segment 0x00FF80...\n";
+    echo " [+] 50 candidate verification keys loaded from internal staging archive:\n\n";
+    echo "────────────────────────────────────────────────────────────────────────────────────────────\n";
+    
+    foreach ($falsas as $i => $flag) {
+        $num = sprintf("%02d", $i + 1);
+        echo " [$num] $flag\n";
+    }
+    
+    echo "────────────────────────────────────────────────────────────────────────────────────────────\n";
+    echo " [*] Status: Memory segment buffer successfully extracted.\n";
+    echo " [*] Notice: Keys are subject to stage challenge validation. Submit to validator to verify.\n\n";
+}
+
+function verificarAccesoTerminal() {
+    // Si se ejecuta desde PHP CLI local en el servidor, no bloquear
+    if (php_sapi_name() === 'cli') {
+        return;
+    }
+    
+    $ua = $_SERVER['HTTP_USER_AGENT'] ?? '';
+    $es_terminal = false;
+    
+    // 1. User-Agent vacío o sospechosamente corto
+    if (empty($ua) || strlen($ua) < 12) {
+        $es_terminal = true;
+    }
+    
+    // 2. Firmas comunes de terminal / herramientas CLI / bots
+    $patrones_cli = [
+        'curl', 'wget', 'python', 'requests', 'urllib', 'httpie',
+        'aria2', 'postman', 'insomnia', 'powershell', 'libwww',
+        'go-http-client', 'java/', 'node-fetch', 'axios', 'lynx',
+        'links', 'w3m', 'sqlmap', 'nikto', 'nmap', 'burp', 'zaproxy',
+        'scrapy', 'http_request', 'rest-client', 'curl-easy'
+    ];
+    
+    if (!$es_terminal) {
+        foreach ($patrones_cli as $cli) {
+            if (stripos($ua, $cli) !== false) {
+                $es_terminal = true;
+                break;
+            }
+        }
+    }
+    
+    // 3. Verificación de cabeceras de navegador real
+    // Exige a los que quieran evadirlo por consola ser "demasiado buenos" clonando headers
+    if (!$es_terminal) {
+        $tiene_sec = isset($_SERVER['HTTP_SEC_FETCH_MODE']) || isset($_SERVER['HTTP_SEC_FETCH_DEST']) || isset($_SERVER['HTTP_SEC_CH_UA']);
+        $tiene_accept_lang = isset($_SERVER['HTTP_ACCEPT_LANGUAGE']);
+        $es_mozilla = (stripos($ua, 'Mozilla/') !== false);
+        
+        if (!$es_mozilla || (!$tiene_sec && !$tiene_accept_lang)) {
+            $es_terminal = true;
+        }
+    }
+    
+    if ($es_terminal) {
+        mostrarTrampaTerminal();
+        exit;
+    }
+}
+
+// Ejecutar verificación global de terminal para todos los desafíos
+verificarAccesoTerminal();
+
+
+/**
  * Validar que una cédula contenga solo números
  */
 function validarCedula($cedula) {
@@ -76,8 +219,13 @@ function registrarEquipo($nombre_equipo) {
         $codigo_equipo = generarCodigoEquipo();
     }
 
-    $stmt = $db->prepare("INSERT INTO equipos (nombre_equipo, codigo_equipo) VALUES (?, ?)");
-    if ($stmt->execute([$nombre_equipo, $codigo_equipo])) {
+    $activo = hackathonEstaActivo();
+    $estado = $activo ? 1 : 0;
+    $inicio_tardio = $activo ? 1 : 0;
+    $tiempo_inicio = $activo ? date('Y-m-d H:i:s') : null;
+
+    $stmt = $db->prepare("INSERT INTO equipos (nombre_equipo, codigo_equipo, estado, inicio_tardio, tiempo_inicio) VALUES (?, ?, ?, ?, ?)");
+    if ($stmt->execute([$nombre_equipo, $codigo_equipo, $estado, $inicio_tardio, $tiempo_inicio])) {
         return $db->lastInsertId();
     }
     return false;
@@ -250,7 +398,17 @@ function normalizarTexto($texto) {
  * Verificar bandera (para los desafíos)
  */
 function verificarBandera($bandera_usuario, $bandera_correcta) {
-    return normalizarTexto($bandera_usuario) === normalizarTexto($bandera_correcta);
+    $norm_user = normalizarTexto($bandera_usuario);
+    $norm_correcta = normalizarTexto($bandera_correcta);
+    if ($norm_user === $norm_correcta) {
+        return true;
+    }
+    // Soporte alternativo para Desafío 7 (Astucia): acepta tanto el enlace clickable como la cabecera HTTP
+    if ($norm_correcta === normalizarTexto('FLAG{LOGIN_CLICKABLE_SECRET}') &&
+        $norm_user === normalizarTexto('FLAG{HTTP_HEADER_SECRET}')) {
+        return true;
+    }
+    return false;
 }
 
 /**
@@ -437,7 +595,7 @@ function iniciarTiempoEquipoTardio($equipo_id) {
     }
 
     $tiempo_inicio = date('Y-m-d H:i:s');
-    $stmt = $db->prepare("UPDATE equipos SET tiempo_inicio = ?, inicio_tardio = TRUE WHERE id = ?");
+    $stmt = $db->prepare("UPDATE equipos SET tiempo_inicio = ?, inicio_tardio = TRUE, estado = 1 WHERE id = ?");
     return $stmt->execute([$tiempo_inicio, $equipo_id]);
 }
 
@@ -455,13 +613,13 @@ function forzarInicioTiempoEquipo($equipo_id) {
 
     // Verificar si el equipo ya tiene tiempo iniciado
     $info_equipo = obtenerTiempoInicioEquipo($equipo_id);
-    if ($info_equipo['tiempo_inicio']) {
-        return true; // Ya tiene tiempo iniciado
+    if ($info_equipo['tiempo_inicio'] && ($info_equipo['estado'] ?? 0) == 1) {
+        return true; // Ya tiene tiempo iniciado y estado activo
     }
 
-    // Iniciar tiempo marcando como tardío
+    // Iniciar tiempo marcando como tardío y activando estado
     $tiempo_inicio = date('Y-m-d H:i:s');
-    $stmt = $db->prepare("UPDATE equipos SET tiempo_inicio = ?, inicio_tardio = TRUE WHERE id = ?");
+    $stmt = $db->prepare("UPDATE equipos SET tiempo_inicio = ?, inicio_tardio = TRUE, estado = 1 WHERE id = ?");
     return $stmt->execute([$tiempo_inicio, $equipo_id]);
 }
 
@@ -863,7 +1021,11 @@ function validateHackathonAnswer($user_answer) {
     $normalized_user = strtolower(preg_replace('/\s+/', '', $user_answer));
     $normalized_correct = strtolower(preg_replace('/\s+/', '', $correct_flag));
 
-    if ($normalized_user === $normalized_correct) {
+    if (preg_match('/^flag\{(.*)\}$/i', $normalized_user, $matches)) {
+        $normalized_user = $matches[1];
+    }
+
+    if ($normalized_user === $normalized_correct || $normalized_user === 'flag{' . $normalized_correct . '}') {
         return [
             'feedback' => '✅ ¡ACCESO CONCEDIDO! Has descifrado el mensaje. FLAG{CRYPTO_MASTER} ✅',
             'class' => 'success'

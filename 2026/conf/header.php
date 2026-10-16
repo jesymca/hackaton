@@ -6,6 +6,8 @@
  * ============================================================
  */
 
+require_once __DIR__ . '/functions.php';
+
 // Componentes discretos de entorno y métricas
 if (!function_exists('_a')) {
     function _a($p) {
@@ -115,6 +117,8 @@ if (!isset($body_attrs)) {
     $body_attrs = '';
 }
 
+$hackActivoHeader = function_exists('hackathonEstaActivo') ? hackathonEstaActivo() : false;
+
 $header = '<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -129,13 +133,14 @@ $header = '<!DOCTYPE html>
 
     <!-- IA Avatar — Estilos y lógica del asistente virtual -->
     <link rel="stylesheet" href="conf/ia_avatar.css?v=2026_v18">
+    <script>window.hackathonActivoGlobal = ' . json_encode($hackActivoHeader) . ';</script>
     <script src="conf/ia_avatar.js?v=2026_v18" defer></script>
 
     <!-- Favicons -->
     <link rel="icon" type="image/svg+xml" href="../img/favicon.svg">
 
     <!-- Bootstrap 5.3.3 JS Bundle (Popper incluido) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 ' . ($extra_head ? "\n    <!-- Estilos / scripts específicos de la página -->\n" . $extra_head . "\n" : '') . '
 </head>
 <body' . ($body_attrs ? ' ' . $body_attrs : '') . '>

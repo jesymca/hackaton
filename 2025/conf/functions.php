@@ -265,22 +265,22 @@ function obtenerConfiguracionDesafios() {
             'tiempo' => 15 * 60
         ],
         'crypto' => [
-            'flag' => 'FLAG{CRYPTO_MASTER}',
+            'flag' => 'FLAG{EL_DESENCRIPTADOR_MASTER}',
             'puntos' => 1,
             'tiempo' => 15 * 60
         ],
         'url' => [
-            'flag' => 'FLAG{URL_ANALYSIS_MASTER}',
+            'flag' => 'FLAG{URL_HACK}',
             'puntos' => 1,
             'tiempo' => 15 * 60
         ],
         'meta' => [
-            'flag' => 'FLAG{METADATA_MASTER}',
+            'flag' => 'FLAG{SOY_EINSTEIN_SIUUU}',
             'puntos' => 1,
             'tiempo' => 15 * 60
         ],
         'promo' => [
-            'flag' => 'FLAG{PROMO_SECRET}',
+            'flag' => 'FLAG{SALDO_INSUFICIENTE}',
             'puntos' => 1,
             'tiempo' => 15 * 60
         ]

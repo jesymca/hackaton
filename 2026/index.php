@@ -17,6 +17,15 @@ if (isset($_SESSION['cedula'])) {
     // Verificar si el hackathon está activo
     $config_hackathon = obtenerConfiguracionHackathon();
     $hackathon_activo = hackathonEstaActivo();
+    
+    // Si el hackathon ya está activo pero el equipo aún no tiene estado activo (0), activarlo automáticamente
+    if ($hackathon_activo) {
+        $info_check = obtenerTiempoInicioEquipo($_SESSION['equipo_id']);
+        if (($info_check['estado'] ?? 0) == 0 || empty($info_check['tiempo_inicio'])) {
+            iniciarTiempoEquipoTardio($_SESSION['equipo_id']);
+        }
+    }
+    
     $info_equipo = obtenerTiempoInicioEquipo($_SESSION['equipo_id']);
     
     // Obtener desafíos completados por el equipo
@@ -113,10 +122,12 @@ if (isset($_SESSION['cedula'])) {
     $primer_miembro = usuarioExiste(trim($_POST["cedula_1"]));
     if ($primer_miembro) {
         iniciarSesion($primer_miembro);
+        session_write_close();
         header("Location: index.php");
         exit;
     } else {
         $_SESSION['form_errors'] = ['Error al iniciar sesión.'];
+        session_write_close();
         header("Location: " . $_SERVER['PHP_SELF']);
         exit;
     }
@@ -127,6 +138,7 @@ if (isset($_SESSION['cedula'])) {
     
     if (!validarCedula($cedula)) {
         $_SESSION['access_errors'] = ['La cédula solo debe contener números.'];
+        session_write_close();
         header("Location: " . $_SERVER['PHP_SELF']);
         exit;
     }
@@ -134,13 +146,15 @@ if (isset($_SESSION['cedula'])) {
     // Verificar si el usuario existe
     $participante = usuarioExiste($cedula);
     if (!$participante) {
-        $_SESSION['access_errors'] = ['No se encontró un equipo registrado con esta cédula.'];
+        $_SESSION['access_errors'] = ['No se encontró un equipo registrado con esta cédula. Regístralo en el formulario de la izquierda si eres un nuevo equipo.'];
+        session_write_close();
         header("Location: " . $_SERVER['PHP_SELF']);
         exit;
     }
     
     // Iniciar sesión
     iniciarSesion($participante);
+    session_write_close();
     header("Location: index.php");
     exit;
 
@@ -436,37 +450,22 @@ if (isset($_SESSION['cedula'])) {
 
 <!-- Bootstrap JS ya incluido por conf/header.php -->
 <script>
-// Modales
-const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
-const warningModal = new bootstrap.Modal(document.getElementById('warningModal'));
-const infoModal = new bootstrap.Modal(document.getElementById('infoModal'));
-
 // Función para mostrar modales
 function showModal(type, message) {
-    let modal, titleElement, messageElement;
+    let modalId = type === 'error' ? 'errorModal' : (type === 'warning' ? 'warningModal' : 'infoModal');
+    let modalEl = document.getElementById(modalId);
+    let messageEl = document.getElementById(modalId + 'Message');
     
-    switch(type) {
-        case 'error':
-            modal = errorModal;
-            titleElement = document.getElementById('errorModalLabel');
-            messageElement = document.getElementById('errorModalMessage');
-            break;
-        case 'warning':
-            modal = warningModal;
-            titleElement = document.getElementById('warningModalLabel');
-            messageElement = document.getElementById('warningModalMessage');
-            break;
-        case 'info':
-            modal = infoModal;
-            titleElement = document.getElementById('infoModalLabel');
-            messageElement = document.getElementById('infoModalMessage');
-            break;
+    if (messageEl) {
+        messageEl.textContent = message;
     }
     
-    if (messageElement) {
-        messageElement.textContent = message;
+    if (modalEl && window.bootstrap && bootstrap.Modal) {
+        let modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modalInstance.show();
+    } else {
+        alert(message);
     }
-    modal.show();
 }
 
 // Validación solo números para todas las cédulas
@@ -477,40 +476,48 @@ document.querySelectorAll('input[name^="cedula"]').forEach(input => {
 });
 
 // Validación para el formulario de acceso
-document.getElementById('cedula_acceso').addEventListener('input', function() {
-    this.value = this.value.replace(/\D/g, '');
-});
+const cedulaAccesoEl = document.getElementById('cedula_acceso');
+if (cedulaAccesoEl) {
+    cedulaAccesoEl.addEventListener('input', function() {
+        this.value = this.value.replace(/\D/g, '');
+    });
+}
 
 // Validación del formulario de equipo
-document.getElementById('team-form').addEventListener('submit', function(e) {
-    let miembrosCompletos = 0;
-    let errores = [];
-    
-    for (let i = 1; i <= 4; i++) {
-        const nombre = document.querySelector(`input[name="nombre_${i}"]`).value.trim();
-        const cedula = document.querySelector(`input[name="cedula_${i}"]`).value.trim();
+const teamFormEl = document.getElementById('team-form');
+if (teamFormEl) {
+    teamFormEl.addEventListener('submit', function(e) {
+        let miembrosCompletos = 0;
+        let errores = [];
         
-        if (nombre !== '' && cedula !== '') {
-            miembrosCompletos++;
-        } else if (nombre !== '' && cedula === '') {
-            errores.push(`El miembro ${i} tiene nombre pero falta la cédula.`);
-        } else if (nombre === '' && cedula !== '') {
-            errores.push(`El miembro ${i} tiene cédula pero falta el nombre.`);
+        for (let i = 1; i <= 4; i++) {
+            const nombreInput = document.querySelector(`input[name="nombre_${i}"]`);
+            const cedulaInput = document.querySelector(`input[name="cedula_${i}"]`);
+            const nombre = nombreInput ? nombreInput.value.trim() : '';
+            const cedula = cedulaInput ? cedulaInput.value.trim() : '';
+            
+            if (nombre !== '' && cedula !== '') {
+                miembrosCompletos++;
+            } else if (nombre !== '' && cedula === '') {
+                errores.push(`El miembro ${i} tiene nombre pero falta la cédula.`);
+            } else if (nombre === '' && cedula !== '') {
+                errores.push(`El miembro ${i} tiene cédula pero falta el nombre.`);
+            }
         }
-    }
-    
-    if (errores.length > 0) {
-        e.preventDefault();
-        showModal('warning', errores.join('\n'));
-        return;
-    }
-    
-    if (miembrosCompletos < 3) {
-        e.preventDefault();
-        showModal('warning', 'Debes registrar al menos 3 miembros completos para el equipo.');
-        return;
-    }
-});
+        
+        if (errores.length > 0) {
+            e.preventDefault();
+            showModal('warning', errores.join('\n'));
+            return;
+        }
+        
+        if (miembrosCompletos < 3) {
+            e.preventDefault();
+            showModal('warning', 'Debes registrar al menos 3 miembros completos para el equipo.');
+            return;
+        }
+    });
+}
 
 // Función global de alternancia para el botón de administrador
 function toggleAdminForm() {
@@ -554,15 +561,17 @@ document.addEventListener('submit', function(e) {
 // Mostrar modales automáticamente si hay errores del servidor
 document.addEventListener('DOMContentLoaded', function() {
     <?php if (!empty($form_errors)): ?>
-        showModal('error', '<?php echo implode("\\n", $form_errors); ?>');
+        showModal('error', <?php echo json_encode(implode("\n", $form_errors)); ?>);
     <?php endif; ?>
     
     <?php if (!empty($access_errors)): ?>
-        showModal('error', '<?php echo implode("\\n", $access_errors); ?>');
+        showModal('error', <?php echo json_encode(implode("\n", $access_errors)); ?>);
     <?php endif; ?>
     
     <?php if (!empty($admin_errors)): ?>
-        showModal('error', '<?php echo implode("\\n", $admin_errors); ?>');
+        showModal('error', <?php echo json_encode(implode("\n", $admin_errors)); ?>);
+        const toggleAdminBtn = document.getElementById('toggle-admin-btn');
+        const adminForm = document.getElementById('admin-form');
         if (toggleAdminBtn && adminForm) {
             adminForm.classList.remove('hidden');
             adminForm.style.display = 'block';
@@ -570,6 +579,14 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleAdminBtn.classList.remove('btn-outline-warning');
             toggleAdminBtn.classList.add('btn-warning');
         }
+    <?php endif; ?>
+    
+    <?php if (!hackathonEstaActivo()): ?>
+    setTimeout(() => {
+        if (window.iaAvatarWidget) {
+            window.iaAvatarWidget.hablar("El Hackatón aún no ha iniciado. Mis servidores están en espera silenciosa.");
+        }
+    }, 1200);
     <?php endif; ?>
 });
 </script>
@@ -670,9 +687,7 @@ echo $header;
     box-shadow: 0 0 25px #ff0055;
 }
 </style>
-</head>
-<body>
-<script>window.segundosRestantesGlobal = <?php echo intval($tiempo_restante_global ?? 0); ?>; window.hackathonActivoGlobal = <?php echo json_encode($hackathon_activo ?? false); ?>; window.banderasEquipoActual = <?php echo count($desafiosCompletados ?? []); ?>; window.esPaginaIndex = true;</script>
+<script>window.segundosRestantesGlobal = <?php echo intval($tiempo_restante_global ?? 0); ?>; window.hackathonActivoGlobal = <?php echo json_encode(($hackathon_activo && ($estado_actual ?? 1) === 1) ? true : false); ?>; window.banderasEquipoActual = <?php echo count($desafiosCompletados ?? []); ?>; window.esPaginaIndex = true;</script>
 <div class="container mt-4">
 
   <div class="text-center mb-3">
@@ -1446,6 +1461,12 @@ document.addEventListener('DOMContentLoaded', function() {
     if (estadoInicial === 1) {
         startTimers();
         window.timersIniciados = true;
+    } else {
+        setTimeout(() => {
+            if (window.iaAvatarWidget) {
+                window.iaAvatarWidget.hablar("El Hackatón aún no ha iniciado. Mis servidores están en espera silenciosa.");
+            }
+        }, 1200);
     }
     
     setupEstadoMonitor();

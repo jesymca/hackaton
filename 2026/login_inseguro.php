@@ -93,7 +93,7 @@ Usuario: admin
                 <p class="lead mb-3">Bienvenido al ecosistema institucional de la Unidad de Ciencia y Tecnología. Cada detalle puede ser una pista o una distracción.</p>
 
                 <div style="text-align:center; margin-top:10px;">
-                    <img src="../../img/cyt.png" alt="Logo Unidad de Ciencia y Tecnología" style="width:90px; height:auto; opacity:0.85;" onerror="this.onerror=null;this.src='../img/cyt.png';">
+                    <img src="../img/cyt.png" alt="Logo Unidad de Ciencia y Tecnología" style="width:90px; height:auto; opacity:0.85;">
                 </div>
 
                 <div class="d-flex flex-wrap gap-2 mt-3">
